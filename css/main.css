@@ -1,0 +1,16 @@
+/* @font-face {
+    font-family: 'font name';
+    src: url('../') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+} */
+
+body {
+    min-height: 100vh;
+    /* background-image: url('../'); */
+    /* background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center; */
+    margin: 0;
+    padding: 0;
+}

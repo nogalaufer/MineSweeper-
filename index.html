@@ -10,18 +10,26 @@
 
 <body onload="onInit()">
     <h1>Mine Sweeper</h1>
-    <span class="timer"></span>
+    <!-- <p>💣: <span class="mines"></span></p>
+    <p>🚩: <span class="flags-left"></span></p>
+    <P><span class="lives-left"></span></P>
+    <P>⏰ <span class="timer"></span> sec</P> -->
     <div class="statusBtn">
-        <button onclick="onInit()">😊</button>
+        <button class="button-30" role="button" onclick="onInit()">😊</button>
     </div>
-    <button onclick="onSetLevel(4,2)">Beginner</button>
-    <button onclick="onSetLevel(8,14)">Medium</button>
-    <button onclick="onSetLevel(12,32)">Expert</button>
+    <button class="button-30" role="button" onclick="onSetLevel(4,2)">Beginner</button>
+    <button class="button-30" role="button" onclick="onSetLevel(8,14)">Medium</button>
+    <button class="button-30" role="button" onclick="onSetLevel(12,32)">Expert</button>
     <table>
         <tbody class="board">
 
         </tbody>
     </table>
+    <p>💣: <span class="mines"></span></p>
+    <p>🚩: <span class="flags-left"></span></p>
+    <P><span class="lives-left"></span></P>
+    <P>⏰ <span class="timer"></span> sec</P>
+    
 <div class="modal">
     <h3></h3>
     <button class="btn" onclick="onInit()"><span></span></button>

@@ -3,6 +3,7 @@
 // const EMPTY = ''
 const MINE = '💣'
 const MARK = '🚩'
+const EMPTY = ''
 
 
 
@@ -14,6 +15,7 @@ var gGame = {
     markedCount: 0,
     secsPassed: 0
 }
+var gMarks = gLevel.MINES
 
 function onInit() {
     const elModal = document.querySelector('.modal')
@@ -46,35 +48,33 @@ function creatCell() {
 
 }
 
-function onCellClicked(elCell, i, j) {
+function onCellClicked(elCell, i, j, ev) {
+    ev.preventDefault()
+
     const cell = gBoard[i][j]
     if (!cell.isCovered) return
 
     if (!gGame.isOn) {
         gGame.isOn = true
-        cell.isCovered = false
-        elCell.classList.replace('covered', 'unCovered')
-        placeMines(gBoard, gLevel.MINES)
+        placeMines(gBoard, gLevel.MINES, { i, j })
         setMinesNegsCount(gBoard)
-
     }
-    if (gGame.isOn) {
-        cell.isCovered = false
-        elCell.classList.replace('covered', 'unCovered')
-        elCell.innerHTML = (cell.isMine) ? MINE : (cell.minesAroundCount || '')
-        gGame.revealedCount++
-        if (cell.isMine) {
-            gameOver(elCell)
+    cell.isCovered = false
+    elCell.classList.replace('covered', 'unCovered')
+    gGame.revealedCount++
+
+    if (cell.isMine) {
+        gameOver(elCell)
+
+    } else {
+        elCell.innerHTML = (cell.minesAroundCount > 0) ? cell.minesAroundCount : ''
+        if (cell.minesAroundCount === '') {
+            // expandShown(gBoard, i, j)
+            // console.log(`Expanding cell at [${i}, ${j}]`);
+
         }
-        // if (!cell.isMine){
-        //     elCell.innerHTML = cell.minesAroundCount
-
-        // }
-
     }
-    // console.log("place MINES", gBoard)
 }
-
 
 function setMinesNegsCount(board) {
     for (var rowIdx = 0; rowIdx < board.length; rowIdx++) {
@@ -97,28 +97,40 @@ function setMinesNegsCount(board) {
     }
 }
 
+
+function checkVictory() {
+    if (gGame.revealedCount === gBoard.length * gBoard[0].length - gLevel.MINES) {
+        gGame.isOn = false
+        const elModal = document.querySelector('.modal')
+        elModal.querySelector('.btn').style.display = 'block'
+        elModal.querySelector('.btn span').innerText = 'Play Again!'
+        elModal.querySelector('h3').innerText = 'WIN!'
+        const elStatusBtn = document.querySelector('.statusBtn button')
+        elStatusBtn.innerText = '🎉😊🎉'
+
+    } else if (gGame.isOn){ 
+         const elModal = document.querySelector('.modal')
+        elModal.querySelector('.btn').style.display = 'block'
+        elModal.querySelector('.btn span').innerText = 'Try Again'
+        elModal.querySelector('h3').innerText = 'Game Over'
+        const elStatusBtn = document.querySelector('.statusBtn button')
+        elStatusBtn.innerText = '🤯'
+
+    }
+
+
+}
+
+
 function gameOver(elCell) {
     elCell.style.backgroundColor = 'rgb(230, 122, 122)'
+
     revealAllCells()
-    onFinishGameModal()
+    checkVictory()
 
 }
 
-function onFinishGameModal() {
-    // if (reason === lost){  
-    const elModal = document.querySelector('.modal')
-    elModal.querySelector('.btn').style.display = 'block'
-    elModal.querySelector('.btn span').innerText = 'Try Again'
-    elModal.querySelector('h3').innerText = 'Game Over'
 
-    // } else {
-    // const elModal = document.querySelector('.modal')
-    // elModal.querySelector('.btn').style.display ='block' 
-    // elModal.querySelector('.btn span').innerText = 'Play Again'
-    // elModal.querySelector('h3').innerText = 'WIN!'
-
-}
-// }
 
 function revealAllCells() {
     for (var i = 0; i < gBoard.length; i++) {
@@ -135,24 +147,79 @@ function revealAllCells() {
 
 }
 
-function placeMines(board, numMines) {
+
+// function expandShown(board, i, j) {
+//     const cell = board[i][j]
+
+//     // אם התא כבר נחשף או שהוא מוקש, אין צורך לבצע שום דבר
+//     if (!cell.isCovered || cell.isMine) return
+
+//     // משנה את המצב של התא ל-unCovered
+//     const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+//     elCell.classList.replace('covered', 'unCovered')
+//     elCell.innerHTML = (cell.minesAroundCount > 0) ? cell.minesAroundCount : ''
+
+//     // עכשיו נבדוק את 8 התאים שסובבים את התא הנלחץ
+//     for (let row = i - 1; row <= i + 1; row++) {
+//         if (row < 0 || row >= board.length) continue  // אם השורה מחוץ לגבולות הלוח
+//         for (let col = j - 1; col <= j + 1; col++) {
+//             if (col < 0 || col >= board[0].length) continue  // אם העמודה מחוץ לגבולות הלוח
+//             if (row === i && col === j) continue  // אם זה התא הנוכחי, דלג עליו
+
+//             const neighborCell = board[row][col]
+
+//             // אם התא לא מכוסה ואין בו מוקש
+//             if (neighborCell.isCovered && !neighborCell.isMine) {
+//                 const elNeighborCell = document.querySelector(`[data-i="${row}"][data-j="${col}"]`)
+//                 elNeighborCell.classList.replace('covered', 'unCovered')
+//                 elNeighborCell.innerHTML = (neighborCell.minesAroundCount > 0) ? neighborCell.minesAroundCount : ''
+
+//                 // אם התא הזה לא מכיל מוקשים, נבצע קריאה רקורסיבית
+//                 if (neighborCell.minesAroundCount === 0) {
+//                     expandShown(board, row, col)  // קריאה רקורסיבית
+//                 }
+//             }
+//         }
+//     }
+// }
+
+
+// function expandShown(board, i, j) {
+//     const cell = board[i][j]
+//     if (!cell.isCovered || cell.isMine) return
+
+//     const elCell = document.querySelector(`[data-i="${i}"][data-j="${j}"]`)
+//     elCell.classList.replace('covered', 'unCovered')
+//     elCell.innerHTML = (cell.minesAroundCount > 0) ? cell.minesAroundCount : ''
+//     if (cell.minesAroundCount === 0) {
+
+//         for (const row = i - 1; row <= i + 1; row++) {
+//             if (row < 0 || row >= board.length) continue
+//             for (const col = j-1; col <= j + 1; col++) {
+//                 if (col < 0 || col >= board[0].length) continue
+//                 if (row === i && col === j) continue
+//                 expandShown(board, row, col)
+//             }
+//         }
+//     }
+// }
+
+
+function placeMines(board, numMines, firstClickPos) {
     const emptyCells = getEmptyCells(board)
+    emptyCells.splice(emptyCells.findIndex(cell => cell.i === firstClickPos.i && cell.j === firstClickPos.j), 1)
     var minesPlaced = 0
-    while (minesPlaced < numMines) {
-        const randomIdx = getRandomInt(0, emptyCells.length)
+    while (minesPlaced < numMines && emptyCells.length > 0) {
+        const randomIdx = getRandomInt(0, emptyCells.length - 1)
         const randomCell = emptyCells[randomIdx]
         const cell = board[randomCell.i][randomCell.j]
         if (!cell.isMine) {
             cell.isMine = true
             minesPlaced++
-
-
+            emptyCells.splice(randomIdx, 1)
         }
 
-        emptyCells.splice(randomIdx, 1)
     }
-    return board
-
 }
 
 function getEmptyCells(board) {
@@ -193,9 +260,10 @@ function renderBoard(board) {
             const cell = board[i][j]
             var className = (cell.isCovered) ? 'covered' : 'unCovered'
             var cellContent = (cell.isMine) ? MINE : (cell.minesAroundCount || '')
+            // var cellMark = (cell.isMarked) ? MARK : ''
             strHTML += `<td class="${className}"
             data-i="${i}" data-j="${j}"
-            onclick="onCellClicked(this,${i},${j})">
+            onmousedown="onCellClicked(this,${i},${j},event)">
             ${cellContent}
             </td>`
         }

@@ -1,8 +1,14 @@
 
+body {
+    text-align: center;
+    
+}
 
 table {
+    border: 0.9px solid black;
     border-collapse: collapse;
-    margin: 20px;
+    margin: 20px auto;
+    
 }
 td {
     width: 40px;
@@ -22,4 +28,10 @@ td {
 
 .modal button{
     display: 'none';
+    
+}
+
+.statusBtn {
+    padding: 10px;
+   
 }

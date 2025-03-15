@@ -91,7 +91,7 @@ function onCellClicked(elCell, i, j) {
     if (gGame.revealedCount === gBoard.length * gBoard[0].length - gLevel.MINES && gMarks === 0) {
         checkVictory()
     }
-    if (cell.isMine & gGame.lives > 0) {
+    if (cell.isMine) {
         // const leftMines = gLevel.MINES
         elCell.innerHTML = MINE
         gGame.lives--
@@ -101,11 +101,11 @@ function onCellClicked(elCell, i, j) {
         updateMines()
         gMarks--
         updateMarkesLeft(gMarks)
-
-        updateLives(gGame.lives)
-        if (gGame.lives === 0) {
-
+        updateLives()
+        console.log(gGame.lives)
+        if (gGame.lives <= 0) {
             gameOver(elCell)
+            return
         }
 
 
@@ -223,7 +223,8 @@ function updateMines() {
 }
 
 function updateMarkesLeft(gMarks) {
-    const markesLeft = gMarks
+
+    let markesLeft = gMarks
     if (gMarks === 0) markesLeft = 0
     document.querySelector('.flags-left').innerText = markesLeft
 }

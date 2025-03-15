@@ -17,7 +17,6 @@ h1 {
 p {
     display: inline-block;
     margin-right: 20px;
-    /* מרווח בין האלמנטים */
     border-left: 2px solid #ccc;
     min-width: 80px;
 
@@ -41,7 +40,7 @@ td {
 
 }
 td:hover {
-    background-color:  #babfdb;  צבע רקע משתנה
+    background-color:  #babfdb; 
     /* border: 2px  rgb(141, 132, 132); */
 }
 
